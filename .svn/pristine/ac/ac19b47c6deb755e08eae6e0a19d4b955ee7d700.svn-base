@@ -1,0 +1,15 @@
+name: csxyxzs
+version: 1
+cron:
+- description: update kb every 3 minutes
+  url: /updateKB.php
+  schedule: "*/1 * * * *"
+- description: cache news
+  url: /cache_news.php
+  schedule: "* 1 * * *"
+handle:
+- compress:  if ( out_header["Content-type"] ~ "text/plain" ) compress
+- compress:  if ( out_header["Content-type"] ~ "application/x-zip-compressed" ) compress
+- compress:  if ( out_header["Content-type"] ~ "text/html" ) compress
+- compress:  if ( out_header["Content-type"] ~ "text/css" ) compress
+- compress:  if ( out_header["Content-type"] ~ "text/javascript" ) compress

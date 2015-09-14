@@ -1,0 +1,82 @@
+body,div,ol,ul,li,dl,dt,dd,h1,h2,h3,h4,h5,h6,p,form,fieldset,legend,input{ 
+  margin:0; padding:0;
+}
+h1,h2,h3,h4,h5,h6{ 
+  font-size:100%; font-weight:normal;
+}
+ol,ul{ 
+  list-style:none;
+}
+img,fieldset{ 
+  border:0 none; display:block;
+}
+a{
+  text-decoration:none;
+}
+/**
+ * clear default
+ */
+
+span.head_text{
+  font-size: 2em;
+  margin:1em;
+}
+body{
+  background: #e5e5e5;
+}
+div.card{
+  background: #ffffff;
+  margin:0.5em;
+  border-radius:3px;
+
+  border: solid transparent;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  /*padding: 1em;*/
+  box-shadow: 0px 1px 2px rgba(138,138,138,0.42);
+}
+
+div.book_name{
+  font-size: 14pt;
+}
+div.book_auth{
+  margin-left: 1em;
+}
+div.book_publ{
+  margin-left: 1em;
+}
+div.book_time{
+  margin-left: 1em;
+}
+div.book_loca{
+  margin-left: 1em;
+}
+
+div.page{
+  font-size: 17pt;
+  margin:10px;
+  padding-left: 1px;
+  padding-right: 1px;
+  border-radius: 2px;
+  background: #ffffff;
+  float: left;
+  border: solid transparent;
+  box-shadow: 0px 1px 5px #888888;
+}
+div.page_now{
+  font-size: 17pt;
+  margin:10px;
+  padding-left: 1px;
+  padding-right: 1px;
+  border-radius: 2px;
+  background: #ee4e4e;
+  float: left;  
+  border: solid transparent;
+  box-shadow: 0px 1px 5px #888888;
+}
+span.page_now{
+  color: white;
+}
+a.page{
+  color: black;
+}

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>我喜欢的档口统计</title>
+    <!-- 来自百度CDN -->
+    <script src="http://s1.bdstatic.com/r/www/cache/ecom/esl/1-6-10/esl.js"></script>
+</head>
+<body>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="height:400px"></div>
+    <script type="text/javascript">
+        // 路径配置
+        require.config({
+            paths:{ 
+                'echarts' : 'http://echarts.baidu.com/build/echarts',
+                'echarts/chart/bar' : 'http://echarts.baidu.com/build/echarts'
+            }
+        });
+        
+        // 使用
+        require(
+            [
+                'echarts',
+                'echarts/chart/pie' // 使用柱状图就加载bar模块，按需加载
+            ],
+            function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('main')); 
+                myChart.setTheme("macarons");
+                var option = {
+                        tooltip : {
+                            trigger: 'item',
+                            formatter: "{a} <br/>{b} : {c} ({d}%)"
+                        },
+                        legend: {
+                            orient : 'vertical',
+                            x : 'left',
+                            data:['一食堂','二食堂','三食堂','排骨米饭/紫菜包饭','新食尚便当','小锅菜','阿刚系列','芳馨佳厨','香包包','卢老三砂锅','川外川/章姐烤肉饭','真不同鸡排饭','饺子']
+                        },
+                        toolbox: {
+                            show : true,
+                            feature : {
+                                mark : {show: true},
+                                dataView : {show: true, readOnly: false},
+                                restore : {show: true},
+                                saveAsImage : {show: true}
+                            }
+                        },
+                        calculable : false,
+                        series : [
+                            {
+                                name:'食堂',
+                                type:'pie',
+                                selectedMode: 'single',
+                                radius : [0, 70],
+                                itemStyle : {
+                                    normal : {
+                                        label : {
+                                            position : 'inner'
+                                        },
+                                        labelLine : {
+                                            show : false
+                                        }
+                                    }
+                                },
+                                data:[
+                                    {value:13, name:'一食堂'},
+                                    {value:35, name:'二食堂'},
+                                    {value:42, name:'三食堂', selected:true}
+                                ]
+                            },
+                            {
+                                name:'档口',
+                                type:'pie',
+                                radius : [100, 140],
+                                data:[
+                                    {value:18, name:'排骨米饭/紫菜包饭'},
+                                    {value:13, name:'新食尚便当'},
+                                    {value:13, name:'小锅菜'},
+                                    {value:7, name:'阿刚系列'},
+                                    {value:7, name:'芳馨佳厨'},
+                                    {value:6, name:'香包包'},
+                                    {value:6, name:'卢老三砂锅'},
+                                    {value:5, name:'川外川/章姐烤肉饭'},
+                                    {value:4, name:'真不同鸡排饭'},
+                                    {value:4, name:'饺子'}
+                                ]
+                            }
+                        ]
+                    };
+                            
+                // 为echarts对象加载数据 
+                myChart.setOption(option); 
+            }
+        );
+    </script>
+</body>
+</html>

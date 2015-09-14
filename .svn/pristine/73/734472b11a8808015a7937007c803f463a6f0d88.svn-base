@@ -1,0 +1,27 @@
+name: csxyxzs
+version: 1
+cron:
+- description: fix every 5 minutes
+  url: /fix.php
+  schedule: "* 1 * * *"
+- description: update kb every 3 minutes
+  url: /updateKB.php
+  schedule: "*/2 * * * *"
+- description: clear
+  url: /clear.php
+  schedule: "0 1 * * 0"
+- description: getName
+  url:/tool/getInfo.php
+  schedule: "0 2 * * *"
+- description: update_students
+  url:/update_student.php
+  schedule: "*/1 * * * *"
+- description: update xyxw xygg everyday
+  url:/cache_news.php
+  schedule: "0 0 * * *"
+handle:
+- compress:  if ( out_header["Content-type"] ~ "text/plain" ) compress
+- compress:  if ( out_header["Content-type"] ~ "application/x-zip-compressed" ) compress
+- compress:  if ( out_header["Content-type"] ~ "text/html" ) compress
+- compress:  if ( out_header["Content-type"] ~ "text/css" ) compress
+- compress:  if ( out_header["Content-type"] ~ "text/javascript" ) compress

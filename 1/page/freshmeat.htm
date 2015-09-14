@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>加入我们</title>
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link href="ratchet.min.css" rel="stylesheet">
+<style>
+body {font-family:'ratchicons'} 
+@font-face { 
+	font-family:ratchicons; 
+	src: 
+	url('ratchicons.woff') format('woff'), /* Modern Browsers */ 
+	url('ratchicons.ttf')  format('truetype'), /* Safari, Android, iOS */ 
+	url('ratchicons.svg#ratchicons') format('svg'); /* Legacy iOS */ 
+} 
+@media screen and (max-width: 768px) {
+	.pic img {
+		width:60%;
+		height:width*140%;
+	}
+}
+@media screen and (min-width: 1024) {
+	.pic img {
+		width:40%;
+		height:width*140%;
+	}
+}
+.pic {
+	text-align:center;
+}
+</style>
+</head>
+<body>
+<header class="bar bar-nav">
+	<h1 class="title">UIT纳新-加入我们</h1>
+</header>
+<div class="content">
+	<div class="content-padded">
+		<div class="pic">
+			<img src="sam.jpg" alt="we want u">
+		</div>	
+		<p>
+		UIT提供了一个平台，使软件编程的专业生和爱好者在学习的同时，得到实践，在实践中掌握知识。在这里，以团队为单位的软件创新开发得以实现。UIT在学校的大力支持关怀下，培养了一批批优秀的软件人才，并源源不断的创造出优秀的作品，在国内乃至国际大赛上屡获佳绩。<br/><br/>
+		现面向全校招收<br/>
+		1.对计算机软件感兴趣的同学；<br/>
+		2.有特殊才能的同学(艺术，设计，英语等)。<br/><br/>
+		</p>
+		<div id="post-form" class="content-padded">
+			<form id="formid" method="post" >
+				<input name="Name" type="text" placeholder="姓名">
+				<input name="Class" type="text" placeholder="专业班级">
+				<input name="Phone" type="text" placeholder="联系方式">
+				<textarea name="Experienced" rows="2" placeholder="编程经验(没有可以不填)"></textarea>
+				<textarea name="Self" rows="5" placeholder="个人简介"></textarea>
+				<button type="submit" class="btn btn-positive btn-block">提交</button>
+			</form>
+		</div>
+	</div>
+</div>
+<script src="ratchet.min.js"></script>
+<script src="jquery-2.1.1.min.js"></script>
+<script>
+$(function(){
+		// Attach a submit handler to the form
+		$( "#formid" ).submit(function( event ) {
+
+			// Stop form from submitting normally
+			event.preventDefault();
+
+			// Get some values from elements on the page:
+			var $form = $( this ),
+			Name = $form.find( "input[name='Name']").val();
+			Class1 = $form.find( "input[name='Class']").val();
+			Phone = $form.find( "input[name='Phone']").val();
+			Experienced = $form.find( "textarea[name='Experienced']").val();
+			Self1 = $form.find( "textarea[name='Self']").val();
+			url = "http://csxyxzs.sinaapp.com/fresher.php";
+
+			// Send the data using post
+			var posting = $.post( url, { Name: Name,Class1: Class1, Phone: Phone,Experienced: Experienced,Self1: Self1 } );
+
+			// Put the results in a div
+			posting.done(function( data ) {
+				console.log(data);
+				$("#post-form").html("<h3>谢谢报名，我们已经收到了~</h3>");
+				});
+		});
+})
+</script>
+</body>
+</html>
+

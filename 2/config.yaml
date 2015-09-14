@@ -1,0 +1,10 @@
+---
+name: csxyxzs
+version: 2
+cron:
+- description: fix 500 first
+  url: /fix.php
+  schedule: "0 0 * * *"
+- description: fix 500 second
+  url: /fix.php
+  schedule: "0 3 * * *"

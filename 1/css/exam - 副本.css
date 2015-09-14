@@ -1,0 +1,52 @@
+body,div,ol,ul,li,dl,dt,dd,h1,h2,h3,h4,h5,h6,p,form,fieldset,legend,input{ 
+  margin:0; padding:0;
+}
+h1,h2,h3,h4,h5,h6{ 
+  font-size:100%; font-weight:normal;
+}
+
+
+ol,ul{ 
+  list-style:none;
+}
+img,fieldset{ 
+  border:0 none; display:block;
+}
+a{
+  text-decoration:none;
+}
+/**
+ * clear default
+ */
+
+
+body{
+  background: #637382;
+}
+div.contain{
+  overflow-x:hidden;
+  overflow-y:auto;
+}
+div.name_title{
+  padding : 8px 8px 8px 8px;
+  font-size: 34px;
+  height: 40px;
+  margin-top: 3px;
+  background: #60a6ed;
+}
+
+a{
+  color: white;
+}
+div.footer{
+  background: #637382;
+  text-align: center;
+  color: white;
+  font-size: 50px;
+  width:100%;
+  bottom:0;
+  position:fixed;   
+  z-index:100000;
+  box-shadow: rgba(0, 0, 0, 0.560784) 0px -6px 12px -3px;
+
+}

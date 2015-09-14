@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>反馈意见</title>
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link href="ratchet.min.css" rel="stylesheet">
+<style>
+body {font-family:'ratchicons'} 
+@font-face { 
+	font-family:ratchicons; 
+	src: 
+	url('ratchicons.woff') format('woff'), /* Modern Browsers */ 
+	url('ratchicons.ttf')  format('truetype'), /* Safari, Android, iOS */ 
+	url('ratchicons.svg#ratchicons') format('svg'); /* Legacy iOS */ 
+} 
+</style>
+</head>
+<body>
+<header class="bar bar-nav">
+	<h1 class="title">反馈意见</h1>
+</header>
+<div class="content">
+	<div class="content-padded">
+		<div id="post-form" class="content-padded">
+			<form id="formid" method="post" >
+				<input name="user" type="text" placeholder="昵称(选填)">
+				<input name="tel" type="text" placeholder="联系方式()选填)">
+				<textarea name="content" rows="5" placeholder="意见或建议"></textarea>
+				<button type="submit" class="btn btn-positive btn-block">提交</button>
+			</form>
+		</div>
+	</div>
+</div>
+<script src="ratchet.min.js"></script>
+<script src="jquery-2.1.1.min.js"></script>
+<script>
+$(function(){
+		// Attach a submit handler to the form
+		$( "#formid" ).submit(function( event ) {
+
+			// Stop form from submitting normally
+			event.preventDefault();
+
+			// Get some values from elements on the page:
+			var $form = $( this ),
+			user = $form.find( "input[name='user']").val();
+			tel = $form.find( "input[name='tel']").val();
+			content = $form.find( "textarea[name='content']").val();
+			url = "http://1.csxyxzs.sinaapp.com/feedback.php";
+
+			// Send the data using post
+			var posting = $.post( url, { user: user,tel: tel, content: content } );
+
+			// Put the results in a div
+			posting.done(function( data ) {
+				console.log(data);
+				$("#post-form").html("<h3>我们已经收到了~</h3>");
+				});
+			});
+})
+</script>
+</body>
+</html>
+
