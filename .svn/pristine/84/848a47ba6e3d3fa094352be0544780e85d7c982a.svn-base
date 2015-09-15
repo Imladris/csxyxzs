@@ -1,0 +1,27 @@
+<?php
+/**
+  * 微信回复用户信息xml格式
+  */
+
+include ("./wx_xmlDataFormat.php");
+//发送文本消息
+function assistor_echo_text($str){
+    global $fromUsername;
+    global $toUsername;
+    global $textTpl;
+
+    $msgType = "text";
+    $resultStr = sprintf($textTpl, $fromUsername, $toUsername, time(), $msgType, $str);
+    echo $resultStr;
+}
+//发送图文消息
+function assistor_echo_news($title, $description, $picUrl, $url){
+    global $newsTpl;
+    global $fromUsername;
+    global $toUsername;
+
+    $msgType='news';
+    $resultStr = sprintf($newsTpl, $fromUsername, $toUsername, time(), $msgType,1, $title,$description,$picUrl,$url);
+    echo $resultStr;
+}
+?>

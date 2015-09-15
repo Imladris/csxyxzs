@@ -1,2 +1,155 @@
 <?php
-echo '<strong>Hello, SAE!</strong>';
+/**
+  * wechat php test
+  */
+
+include ("./wx_responseMsg.php");
+include ("./controlRoute.php");
+include ("./functionHandle.php");
+include ("./classHelp.php");
+include ("./mysqlHandle.php");
+
+$kb_term = 15;            //课表使用的学年变量，维护时改动
+$cj_term = 14;          //成绩使用的学年变量，维护时修改
+
+//新建Memcache类
+$mc=memcache_init();
+
+//操作菜单
+$help_menu="
+回复[bd]绑定学号
+回复[jc]解除绑定
+回复[成绩]查询成绩
+回复[课表]查询本日课表
+回复[明天]查询明天课表
+回复[周课表]查询周课表
+回复[放假]查询放假信息
+回复[图书]查询图书馆信息
+回复[食堂]查询食堂信息
+回复[all]直接显示所有食堂
+回复[快递]查询快递
+回复[天气]查询大连实时天气
+回复[笑话]查看笑话
+回复[CET]查询四六级成绩
+回复[考试]查询考试时间安排
+回复[新闻]查看校内资讯
+回复[通知]查看学校最新通知
+回复[盒子]查看城院盒子介绍
+";
+
+
+//get post data, May be due to the different environments
+$postStr = $GLOBALS["HTTP_RAW_POST_DATA"];                  //获取微信接收的消息
+
+	//extract post data
+if (!empty($postStr)){
+    /* libxml_disable_entity_loader is to prevent XML eXternal Entity Injection,
+       the best way is to check the validity of xml by yourself */
+  	$postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+    $fromUsername = $postObj->FromUserName;
+    $toUsername = $postObj->ToUserName;
+    //消息类型
+    $form_MsgType = strtolower($postObj->MsgType);
+
+     //欢迎消息
+    if($form_MsgType=="event")
+    {
+        //获取事件类型
+        $form_Event = strtolower($postObj->Event);
+        //订阅事件
+        if($form_Event=="subscribe")
+        {
+            $welcome_str="感谢您关注城院小助手！[愉快]\n\n".$help_menu;
+            //回复欢迎文字消息
+            $msgType = "text";
+            assistor_echo_text($welcome_str);
+            exit;
+        }
+        if($form_Event=="click")
+        {
+            $isClick=true;
+        }
+    }
+    else if($form_MsgType=="voice")
+    {
+        $isVoice=true;
+    }
+
+
+
+    //用户文字回复进行绑定、查询等操作
+    if($form_MsgType=="text" || $isClick==true || $isVoice==true)
+    {
+        //获取用户点击菜单的key
+        if($isClick==true)
+        {
+            
+
+            $form_Content = trim($postObj->EventKey);
+            $form_Content = string::un_script_code($form_Content);
+        }
+        //获取用户语音输入内容
+        else if($isVoice==true)
+        {
+            $form_Content = trim($postObj->Recognition);
+            $form_Content = string::un_script_code($form_Content);
+        }
+        else
+        {
+            //获取用户发送的文字内容并过滤
+            $form_Content = trim($postObj->Content);
+            $form_Content = string::un_script_code($form_Content);
+        }
+    }
+
+    //assistor_echo_text($form_Content);
+    //exit;
+
+        //如果发送内容不是空白则执行相应操作
+    if(!empty($form_Content)||$form_Content==0)
+    {
+        if(!handleMsg($form_Content)){            //判断是否为指定功能
+            //从memcache获取用户上一次动作
+
+            $last_do=$mc->get($fromUsername."_do");
+            //从memcache获取用户上一次数据
+            $last_data=$mc->get($fromUsername."_data");
+
+            switch ($last_do)
+            {
+                case "bd_0":                 //绑定帐号
+                    assistor_student_bind_step_0();
+                    break;      
+                case "bd_1":                //绑定帐号
+                    assistor_student_bind_step_1();
+                    break;
+                case "tscx_0":                     //查图书
+                    assistor_lib_book();
+                    break;
+                case "kdcx_0":                   //快递查询
+                    assistor_kd_step_0(); 
+                    break;
+                case "cet_0":                       //四六级查询
+                    assistor_cet_step_0();
+                    break;
+                case "cet_1":                     //四六级查询
+                    assistor_cet_step_1();
+                    break;
+                case "st_0":                    //几食堂
+                    assistor_canteen_step_0();
+                    break;
+                case "st_1":                   //几档口
+                    assistor_canteen_step_1();
+                    break;
+                default:
+                
+                    assistor_auto_reply();        //没有对应处理方法的方法
+            }
+        }
+    }
+}else {
+	echo "";
+	exit;
+}
+
+?>

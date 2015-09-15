@@ -496,7 +496,7 @@ function assistor_kd_step_0(){
 function assistor_holiday(){
 
     $week = 20-calc_week();;
-    $back ="2015年上半年法定节假日安排 清明4.4-4.6周一停课,五一5.1-5.3周五停课,端午6.20-6.22周一停课";
+    $back ="2015年下半年法定节假日安排 中秋节9.26-9.27，国庆节10.1-10.7，10.8-10.10上课时间，10.11正常休息。";
     assistor_echo_text($back);
 }
 
@@ -566,7 +566,7 @@ function assistor_kb($offset){
         }
         else
         {
-            $back = "正在更新数据，再试一次";
+            $back = "课表数据已更新，请再试一次";
             //获取课表json
             $sql= "SELECT id,pw FROM id_pw WHERE id = '$id'";
             $result = mysql_query($sql);
@@ -604,11 +604,6 @@ function assistor_canteen_step_0(){
 
     switch ($form_Content)
     {
-    case '1':
-    case '一':
-    case '一食堂':
-        $st_locat= "一食堂";
-        break;
     case '2':
     case '二':
     case '二食堂':
@@ -619,10 +614,6 @@ function assistor_canteen_step_0(){
     case '三食堂':
         $st_locat= "三食堂";
         break;
-    case 'all':
-    case 'All':
-        $st_locat = "all";
-        break;
     default:
         $wrong = "1";
         break;
@@ -630,7 +621,7 @@ function assistor_canteen_step_0(){
 
     if ($wrong)
     {
-        $back="没有这个食堂\n请重新输入\n例:'1'或者'一'再或者'一食堂'";
+        $back="没有这个食堂\n请重新输入\n例:'2'或者'二'再或者'二食堂'";
     }
     else
     {
@@ -655,7 +646,7 @@ function assistor_canteen_step_0(){
             // str_replace("\n","",$str_1);
             $str_2 = $db_value[1];
             // str_replace("/","\n",$str_2);
-            $back.=$loop.".".$str_1.":\n".$str_2."\n";
+            $back.=$loop.".".$str_1."\n".$str_2."\n";
             $loop++;
         }
         $back .= "\n\n回复对应编号查看菜单";
@@ -677,10 +668,11 @@ function assistor_canteen_step_1(){
 
     if ( $id != '')
     {
+        //$back = "菜单:".$id;
         $back = "菜单:\n";
         $sql = "SELECT name,price FROM `caidan` WHERE id='$id'";
         $sql_back = mysql_query($sql);
-        $loop = 0;
+        //$loop = 0;
         while ( $db_value=mysql_fetch_array($sql_back) )
         {
             //储存食堂编号
@@ -689,8 +681,16 @@ function assistor_canteen_step_1(){
             // str_replace("\n","",$str_1);
             $str_2 = $db_value[1];
             // str_replace("/","\n",$str_2);
-            $back.=$loop.".".$str_1." ".$str_2."\n";
-            $loop++;
+            $back.=$str_1." ￥".$str_2."\n";
+            //$loop++;
+            //$str_1 = $db_value[0];
+            // str_replace("\n","",$str_1);
+            //$str_2 = $db_value[1];
+            // str_replace("/","\n",$str_2);
+            //$back.=$loop.".".$db_value[0]." ".$db_value[1]."\n";
+            
+            //$back.=$loop.".".$db_value[0]."\n";
+            //$loop++;
         }
         //清空memcache动作
         $mc->delete($fromUsername."_do");
@@ -714,7 +714,7 @@ function assistor_canteen_all(){
         // str_replace("\n","",$str_name);
         $str_tel = $str_value[1];
         // str_replace("/","\n",$str_tel);
-        $back.=$str_name.":\n".$str_tel."\n";
+        $back.="档口：".$str_name."\n"."电话：".$str_tel."\n";
     }
 
     assistor_echo_text($back);
@@ -912,5 +912,6 @@ function assistor_game()
     assistor_echo_news($title, $description, $picUrl, $url);
     exit;
 }
+
 
 ?>

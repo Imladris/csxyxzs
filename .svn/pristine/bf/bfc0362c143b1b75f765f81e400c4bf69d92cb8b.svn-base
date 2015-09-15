@@ -1,0 +1,50 @@
+<?php
+$route_list=array(
+"closehelp"=>"assistor_close_help",
+"exit"=>"assistor_exit",
+"test"=>"assistor_test",
+"bd"=>"assistor_student_bind",
+"jc"=>"assistor_student_remove",
+"tscx"=>"assistor_lib",
+"mxp"=>"assistor_gift",
+"ks"=>"assistor_exam",
+"news"=>"assistor_news",
+"notice"=>"assistor_notice",
+"cet"=>"assistor_cet",
+"kuaidi"=>"assistor_kd",
+"joke"=>"assistor_joke",
+"weather"=>"assistor_weather",
+"fj"=>"assistor_holiday",
+"cj"=>"assistor_grade",
+"kb"=>"assistor_kb",
+"st"=>"assistor_canteen",
+"qbst"=>"assistor_canteen_all",
+"teacherbd"=>"assistor_teacher_bind",
+"week"=>"assistor_week_kb",
+"general_course"=>"assistor_general_course",
+"citybox"=>"assistor_citybox",
+"vod"=>"assistor_vod",
+"statistic_st"=>"assistor_count_st",
+"order_food"=>"assistor_order_food",
+"wall"=>"assistor_wall",
+"random_food"=>"assistor_random_food",
+"game"=>"assistor_game"
+);
+
+function handleMsg($form_Content){
+    //处理微信接收的信息是否符合对应要求
+    $operate=reduce_route($form_Content);
+    $funcname = $operate[0];
+    $params = $operate[1];
+
+    if(array_key_exists($funcname,$route_list)){
+        if(count($operate) == 1)
+            $route_list[$funcname]();
+        else{
+            $route_list[$funcname]($params);
+        }
+        return true;
+    }else{
+        return false;
+    }
+}

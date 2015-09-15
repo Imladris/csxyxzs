@@ -30,7 +30,7 @@ $route_list=array(
     "order_food"=>"assistor_order_food",
     "wall"=>"assistor_wall",
     "random_food"=>"assistor_random_food",
-    "game"=>"assistor_game"
+    "game"=>"assistor_game",
 );
 
 function reduce_route($form_Content){

@@ -23,6 +23,7 @@ $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
 $help_menu="
 回复[bd]绑定学号
 回复[jc]解除绑定
+回复[时刻表]查询每日时刻表
 回复[成绩]查询成绩
 回复[课表]查询本日课表
 回复[明天]查询明天课表
@@ -31,7 +32,7 @@ $help_menu="
 回复[图书]查询图书馆信息
 回复[食堂]查询食堂信息
 回复[all]直接显示所有食堂
-回复[快递]查询快递
+复[快递]查询快递
 回复[微信墙]进入微信墙
 回复[天气]查询大连实时天气
 回复[笑话]查看笑话
@@ -161,7 +162,7 @@ if (!empty($postStr))
             //考试时间
             //news
             //notice    201407151110
-            //CET
+            //CET 
 
             if ($last_do == 'cet_0') {
                 assistor_cet_step_0();
@@ -206,11 +207,14 @@ if (!empty($postStr))
                 assistor_teacher_bind_step_0();
                 exit;
             }
+            
             //teacher 课表
             //解除绑定
             //用户自动回复
             assistor_auto_reply();
             exit;
+            //查询时刻表
+           
         }
     }
     else if($form_MsgType=="image")
