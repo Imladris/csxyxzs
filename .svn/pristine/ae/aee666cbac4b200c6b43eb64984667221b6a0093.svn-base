@@ -1,7 +1,5 @@
 <?php
 
-include ("./functionHelp.php");
-
 function assistor_auto_reply(){
     global $mc;
     global $help_menu;
@@ -34,8 +32,8 @@ function assistor_canteen(){
     global $fromUsername;
 
     //用memcache保存这步操作，格式为名称、值、有效时间(单位秒)；
-    $mc->set($fromUsername."_do", "st_0", 0, 60);
-    $mc->set($fromUsername."_data", "", 0, 60);
+    $mc->set($fromUsername."_do", "st_0", 0, 600);
+    $mc->set($fromUsername."_data", "", 0, 600);
 
     assistor_echo_text("想要几号食堂的，输入exit退出操作！") ;
 }
@@ -71,7 +69,15 @@ function assistor_canteen_step_0(){
     }
     else
     {
-        $sql = "select name,telephone,id from shitang where location ='$st_locat'";
+        if($st_locat == 'all')
+        {
+            $sql = "select name,telephone,id from shitang";
+        }
+        else
+        {
+            $sql = "select name,telephone,id from shitang where location ='$st_locat'";
+        }
+
         $sql_back = mysql_query($sql);
         $loop = 0;
         $back = "";
@@ -89,7 +95,7 @@ function assistor_canteen_step_0(){
         }
         $back .= "\n\n回复对应编号查看菜单";
         $mc->set($openid."_do", "st_1", 0, 600);
-        $mc->set($openid."_data", json_encode($arr), 0, 60);
+        $mc->set($openid."_data", json_encode($arr), 0, 600);
     }
 
     assistor_echo_text($back);
@@ -107,9 +113,11 @@ function assistor_canteen_step_1(){
 
     if ( $id != '')
     {
+        //$back = "菜单:".$id;
         $back = "菜单:\n";
         $sql = "SELECT name,price FROM `caidan` WHERE id='$id'";
         $sql_back = mysql_query($sql);
+        //$loop = 0;
         while ( $db_value=mysql_fetch_array($sql_back) )
         {
             //储存食堂编号
@@ -119,7 +127,15 @@ function assistor_canteen_step_1(){
             $str_2 = $db_value[1];
             // str_replace("/","\n",$str_2);
             $back.=$str_1." ￥".$str_2."\n";
-
+            //$loop++;
+            //$str_1 = $db_value[0];
+            // str_replace("\n","",$str_1);
+            //$str_2 = $db_value[1];
+            // str_replace("/","\n",$str_2);
+            //$back.=$loop.".".$db_value[0]." ".$db_value[1]."\n";
+            
+            //$back.=$loop.".".$db_value[0]."\n";
+            //$loop++;
         }
         //清空memcache动作
         $mc->delete($fromUsername."_do");
@@ -152,34 +168,39 @@ function assistor_canteen_all(){
 
 //查看课表，参数控制查看今天明天还是后天
 function assistor_kb($offset){
-    global $kb_term;
+    global $term;
     global $fromUsername;
 
+    global $mc;
+    global $form_Content;
+
     $openid = $fromUsername;
+
+    $id = get_id($openid);
+    $pw = $form_Content;
     //是否绑定
-    if ($id = is_bd($openid))
+    if (is_bd($openid))
     {
-       
+
         //读取Sae数据库
         if ($json_content = select_kb($id))
-       {
-         $back = "向学校查询课表时出错，建议重新绑定下";
-            //$day=date("Y-m-d",strtotime('+'.$offset.' day'));
-            //$back = format_kb($json_content,$day);
-            //if ($back == "") {
-         //       $back = "向学校查询课表时出错，建议重新绑定下";
-            //}
+        {
+            $day=date("Y-m-d",strtotime('+'.$offset.' day'));
+            $back = format_kb($json_content,$day);
+            if ($back == "") {
+                $back = "向学校查询课表时出错，建议重新绑定下";
+            }
         }
         else
         {
             $back = "课表数据已更新，请再试一次";
             //获取课表json
-            $sql= "SELECT id,pw FROM _id_pw WHERE id = '$id'";
+            $sql= "SELECT id,pw FROM id_pw WHERE id = '$id'";
             $result = mysql_query($sql);
             $row = mysql_fetch_array($result);
             $pw = $row[1];
-          $kb_json = get_kb_json($id,$pw,$kb_term);
-            insert_kb($id,$kb_json,$kb_term);
+            $kb_json = get_kb_json($id,$pw,$term);
+            insert_kb($id,$kb_json,$term);
         }
         //$back = "课表功能暂时无法使用，我们正在修复，给您带来的不便，敬请谅解！";
     }
@@ -201,6 +222,10 @@ function assistor_week_kb(){
         assistor_echo_text($back);
         exit;
     }
+
+
+
+
     $title = '周课表';
     $description = '可以把这条消息加入收藏哦！直接打开就能看';
     $picUrl = 'https://csxyxzs.sinaapp.com/img/schedule.jpg';
@@ -253,39 +278,34 @@ function assistor_grade($flag){
 
 //查看放假安排
 function assistor_holiday(){
+
+    $week = 20-calc_week();;
     $back ="2015年下半年法定节假日安排 中秋节9.26-9.27，国庆节10.1-10.7，10.8-10.10上课时间，10.11正常休息。";
     assistor_echo_text($back);
 }
 
 //查看大连天气
 function assistor_weather(){
-    
+    /*
     //用mc来做参数传递
-    /*global $mc;
+    global $mc;
     global $fromUsername;
     $cityname = $mc->get($fromUsername."_city");
     $mc->delete($fromUsername."_city");
      */
-
-    $ch = curl_init();
-    $url = 'http://apis.baidu.com/apistore/weatherservice/cityid?cityid=101070203';
-    $header = array(
-        'apikey: 3de7b134f8f877b75af9be0cd473a578',
-    );
-    // 添加apikey到header
-    curl_setopt($ch, CURLOPT_HTTPHEADER  , $header);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    // 执行HTTP请求
-    curl_setopt($ch , CURLOPT_URL , $url);
-    $res = curl_exec($ch);
-    $json = json_decode($res);
+    $url = "http://v.juhe.cn/weather/index?cityname=%E5%A4%A7%E8%BF%9E&key=9a8dc37abaf5e2e97ccdb17f27765a2a";
+    $json_page = file_get_contents($url);
+    $json = json_decode($json_page);
     $output="大连天气:\n";
-    $output.="今日天气:".$json->retData->weather."\n";
-    $output.="实时气温:".$json->retData->temp."℃\n";
-    $output.="最低温度:".$json->retData->l_tmp."℃\n";
-    $output.="最高温度:".$json->retData->h_tmp."℃\n";
-	$output.="实时风力:".$json->retData->WS."\n";
-    $output.="今日风向:".$json->retData->WD;
+    $output.="实时气温:".$json->result->sk->temp."\n";
+    $output.="实时风力:".$json->result->sk->wind_strength."\n";
+    $output.="今日天气:".$json->result->today->weather."\n";
+    $output.="今日温度:".$json->result->today->temperature."\n";
+    $output.="今日风力:".$json->result->today->wind."\n";
+    $output.="穿衣建议:".$json->result->today->dressing_advice."\n";
+    $day="day_".date("Ymd");
+    $output.="次日气温:".$json->result->future->$day->temperature."\n";
+    $output.="次日天气:".$json->result->future->$day->weather."\n";
     assistor_echo_text($output);
 }
 
@@ -304,8 +324,8 @@ function assistor_kd(){
     global $fromUsername;
 
     //用memcache保存这步操作，格式为名称、值、有效时间(单位秒)；
-    $mc->set($fromUsername."_do", "kdcx_0", 0, 120);
-    $mc->set($fromUsername."_data", "0", 0, 120);
+    $mc->set($fromUsername."_do", "kdcx_0", 0, 600);
+    $mc->set($fromUsername."_data", "0", 0, 600);
     $back = "请输入快递单号(不用输入快递公司)，或输入exit退出操作！";
     assistor_echo_text($back);
 }
@@ -339,34 +359,34 @@ function assistor_kd_step_0(){
     $mc->delete($fromUsername."_data");
 }
 
-//查看四六级成绩提示输入考试号(暂时不使用)
+//查看四六级成绩提示输入考试号
 function assistor_cet(){
     global $fromUsername;
     global $mc;
 
-    $mc->set($fromUsername."_do", "cet_0", 0, 60);
-    $mc->set($fromUsername."_data", "0", 0, 60);
+    $mc->set($fromUsername."_do", "cet_0", 0, 600);
+    $mc->set($fromUsername."_data", "0", 0, 600);
 
     $back = "请输入考试号";
 
     assistor_echo_text($back);
 }
 
-//查看四六级成绩提示输入姓名(暂时不使用)
+//查看四六级成绩提示输入姓名
 function assistor_cet_step_0(){
     global $mc;
     global $form_Content;
     global $fromUsername;
 
-    $mc->set($fromUsername."_do", "cet_1", 0, 60);
-    $mc->set($fromUsername."_data", $form_Content, 0, 60);
+    $mc->set($fromUsername."_do", "cet_1", 0, 600);
+    $mc->set($fromUsername."_data", $form_Content, 0, 600);
 
     $back = "请输入姓名(前三个字即可)";
 
     assistor_echo_text($back);
 }
 
-//查看四六级成绩返回结果(暂时不使用)
+//查看四六级成绩返回结果
 function assistor_cet_step_1(){
     global $mc;
     global $fromUsername;
@@ -397,7 +417,7 @@ function assistor_cet_step_1(){
     $mc->delete($openid."_data");
 }
 
-//查看学校通知(暂时不使用)
+//查看学校通知
 function assistor_notice(){
     global $fromUsername;
     global $toUsername;
@@ -435,7 +455,7 @@ function assistor_notice(){
     echo $back;
 }
 
-//查看学校新闻(暂时不使用)
+//查看学校新闻
 function assistor_news(){
     global $fromUsername;
     global $toUsername;
@@ -475,17 +495,16 @@ function assistor_news(){
 //考试安排查询
 function assistor_exam(){
     global $fromUsername;
-    
+    $open = true;
     $openid = $fromUsername;
     //是否绑定
-    //if (!is_bd($openid))
-    //{
-    //    $back = "请先绑定账号(回复bd)";
-    //    assistor_echo_text($back);
-    //    exit;
-    //}
+    if (!is_bd($openid))
+    {
+        $back = "请先绑定账号(回复bd)";
+        assistor_echo_text($back);
+        exit;
+    }
 
-    $open = false;               //人工维护是否为考试周
     if(!$open){
         $back = "考试已经结束啦";
         assistor_echo_text($back);
@@ -530,8 +549,8 @@ function assistor_lib(){
 
     $openid = $fromUsername;
     //用memcache保存这步操作，格式为名称、值、有效时间(单位秒)；
-    $mc->set($openid."_do", "tscx_0", 0, 120);
-    $mc->set($openid."_data", "0", 0, 120);
+    $mc->set($openid."_do", "tscx_0", 0, 600);
+    $mc->set($openid."_data", "0", 0, 600);
 
     $back = "请输入书名，或输入exit退出操作！";
     assistor_echo_text($back);
@@ -582,14 +601,14 @@ function assistor_student_remove(){
 
     $openid = $fromUsername;
     $back = is_bd($openid);
-    if ($back)
+    if ( $back)
     {
         del_user($openid);
         $back = "解绑成功";
     }
     else
     {
-        $back = "您没有绑定";
+        $back = "还未绑定";
     }
     assistor_echo_text($back);
 }
@@ -605,34 +624,6 @@ function assistor_exit(){
     $mc->delete($fromUsername."_data");
 
     $back = "你已经退出当前操作，请输入指令进行其他操作或输入[help]查看指令";
-    assistor_echo_text($back);
-}
-
-//绑定帐号提示输入密码
-function assistor_student_bind(){
-    global $mc;
-    global $fromUsername;
-
-    if ( $back = is_bd($fromUsername) )
-    {
-        $back = "已绑定,回复[jc]解除绑定";
-    }
-    else
-    {
-        //校网检查
-        $fp = fsockopen("cityjw.dlut.edu.cn", 7001, $errno, $errstr, 2);
-        if (!$fp)
-        {
-            $back = "Oops,校网又挂了,暂时不能绑定！囧rz";
-        }
-        else
-        {
-            //用memcache保存这步操作，格式为名称、值、有效时间(单位秒)；
-            $mc->set($fromUsername."_do", "bd_0", 0, 60);
-            $mc->set($fromUsername."_data", "0", 0, 60);
-            $back = "请输入学号";
-        }
-    }
     assistor_echo_text($back);
 }
 
@@ -671,27 +662,27 @@ function assistor_student_bind_step_1(){
         $mc->delete($openid."_do");
         $mc->delete($openid."_data");
         //数据库插入
-        $sql = "insert into _openid_id values('$openid', '$id', now())";
+        $sql = "insert into openid_id values('$openid', '$id', now())";
         if ( mysql_query($sql) )
         {
             $back = "绑定成功";
 
             //获取成绩json
-            //$score_json = get_score_json($id,$pw,$cj_term);
+            $score_json = get_score_json($id,$pw,$cj_term);
             //insert chengji
-            //insert_score($id,$score_json,$cj_term);
+            insert_score($id,$score_json,$cj_term);
             //获取课表json
             $kb_json = get_kb_json($id,$pw,$kb_term);
             //insert kb
             insert_kb($id,$kb_json,$kb_term);
 
-            $sql = "insert into _id_pw values('$id', '$pw')";
+            $sql = "insert into id_pw values('$id', '$pw')";
             if (mysql_query($sql) ) {//如果插入失败  则更新原有数据
-                $sql = "update _id_pw set pw = '$pw' where id = '$id'";
+                $sql = "update id_pw set pw = '$pw' where id = '$id'";
                 mysql_query($sql);
             }
             //插入id_type
-            $sql = "insert into _id_type values('$id', 's')";
+            $sql = "insert into id_type values('$id', 's')";
             mysql_query($sql);
 
         } else {

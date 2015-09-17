@@ -6,7 +6,6 @@
 include ("./wx_responseMsg.php");
 include ("./controlRoute.php");
 include ("./functionHandle.php");
-include ("./functionHelp.php");
 include ("./classHelp.php");
 include ("./mysqlHandle.php");
 
@@ -76,8 +75,6 @@ if (!empty($postStr)){
         $isVoice=true;
     }
 
-
-
     //用户文字回复进行绑定、查询等操作
     if($form_MsgType=="text" || $isClick==true || $isVoice==true)
     {
@@ -99,24 +96,13 @@ if (!empty($postStr)){
             $form_Content = trim($postObj->Content);
             $form_Content = string::un_script_code($form_Content);
         }
+    }
 
-        //如果发送内容不是空白则执行相应操作
-        if(!empty($form_Content)||$form_Content==0)
-        {
-            //这放route函数
-            $operate=reduce_route($form_Content);
-            $funcname = $operate[0];
-            $params = $operate[1];
-
-            //处理微信接收的信息是否符合对应要求
-            if(array_key_exists($funcname,$route_list)){
-                if(count($operate) == 1)
-                    $route_list[$funcname]();
-                else{
-                    $route_list[$funcname]($params);
-                }
-                exit;
-            }
+    //如果发送内容不是空白则执行相应操作
+    if(!empty($form_Content)||$form_Content==0)
+    {
+        if(!handleMsg($form_Content)){            //判断是否为指定功能
+            //从memcache获取用户上一次动作
 
             $last_do=$mc->get($fromUsername."_do");
             //从memcache获取用户上一次数据

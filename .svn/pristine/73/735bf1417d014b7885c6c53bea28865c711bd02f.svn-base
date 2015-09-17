@@ -2,23 +2,26 @@
 
 $route_list=array(
 
-    "citybox"=>"assistor_citybox",//
+    "citybox"=>"assistor_citybox",
     "week"=>"assistor_week_kb",
-    "st"=>"assistor_canteen",///
+    "st"=>"assistor_canteen",
     "qbst"=>"assistor_canteen_all",
     "kb"=>"assistor_kb",
     "cj"=>"assistor_grade",
-    "fj"=>"assistor_holiday",///
-    "weather"=>"assistor_weather", ///
-    "joke"=>"assistor_joke",///
-    "kuaidi"=>"assistor_kd",//
-    "closehelp"=>"assistor_close_help",///
-    "exit"=>"assistor_exit",///
-    "test"=>"assistor_test",///
+    "fj"=>"assistor_holiday",
+    "weather"=>"assistor_weather", 
+    "joke"=>"assistor_joke",
+    "kuaidi"=>"assistor_kd",
+    "cet"=>"assistor_cet",
+    "notice"=>"assistor_notice",
+    "closehelp"=>"assistor_close_help",
+    "exit"=>"assistor_exit",
+    "test"=>"assistor_test",
     "bd"=>"assistor_student_bind",
     "jc"=>"assistor_student_remove",
-    "tscx"=>"assistor_lib",//
-    "ks"=>"assistor_exam",//
+    "tscx"=>"assistor_lib",
+    "ks"=>"assistor_exam",
+    "news"=>"assistor_news",
 );
 
 function reduce_route($form_Content){
@@ -41,8 +44,17 @@ function reduce_route($form_Content){
     case "图书": case "tscx": case "图书馆": case "书籍查询": case "图书查询":
         return array("tscx");
         break;
-    case "考试时间": case "考试": case "ks": case "exam":
+    case "考试时间": case "考试": case "ks": case "exam";
         return array("ks");
+        break;
+    case "新闻": case "学院新闻": case "news":
+        return array("news");
+        break;
+    case "通知": case "学院公告": case "notice":
+        return array("notice");
+        break;
+    case "cet": case "四六级": case "四六级成绩":case "四级": case "六级":
+        return array("cet");
         break;
     case "快递": case "快递查询": case "kd": case "kuaidi":
         return array("kuaidi");

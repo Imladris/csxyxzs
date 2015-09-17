@@ -1,0 +1,153 @@
+<?php
+$route_list=array(
+"closehelp"=>"assistor_close_help",
+"exit"=>"assistor_exit",
+"test"=>"assistor_test",
+"bd"=>"assistor_student_bind",
+"jc"=>"assistor_student_remove",
+"tscx"=>"assistor_lib",
+"mxp"=>"assistor_gift",
+"ks"=>"assistor_exam",
+"news"=>"assistor_news",
+"notice"=>"assistor_notice",
+"cet"=>"assistor_cet",
+"kuaidi"=>"assistor_kd",
+"joke"=>"assistor_joke",
+"weather"=>"assistor_weather",
+"fj"=>"assistor_holiday",
+"cj"=>"assistor_grade",
+"kb"=>"assistor_kb",
+"st"=>"assistor_canteen",
+"qbst"=>"assistor_canteen_all",
+"teacherbd"=>"assistor_teacher_bind",
+"week"=>"assistor_week_kb",
+"general_course"=>"assistor_general_course",
+"citybox"=>"assistor_citybox",
+"vod"=>"assistor_vod",
+"statistic_st"=>"assistor_count_st",
+"order_food"=>"assistor_order_food",
+"wall"=>"assistor_wall",
+"random_food"=>"assistor_random_food",
+"game"=>"assistor_game"
+);
+
+function handleMsg($form_Content){
+    //处理微信接收的信息是否符合对应要求
+    $operate=reduce_route($form_Content);
+    $funcname = $operate[0];
+    $params = $operate[1];
+
+    if(array_key_exists($funcname,$route_list)){
+        if(count($operate) == 1)
+            $route_list[$funcname]();
+        else{
+            $route_list[$funcname]($params);
+        }
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function reduce_route($form_Content){
+
+    switch ($form_Content) {
+        case "关闭帮助": case "closehelp":
+            return array("closehelp");
+            break;
+        case "exit": case "q":
+            return array("exit");
+            break;
+        case "test":
+            return array("test");
+            break;
+        case "绑定": case "bd":
+            return  array("bd");
+            break;
+        case "解除": case "取消绑定": case "解除绑定": case "jc":
+            return array("jc");
+            break;
+        case "图书": case "tscx": case "图书馆": case "书籍查询": case "图书查询":
+            return array("tsxc");
+            break;
+        case "我要明信片": case "纪念品": case "明信片": case "mxp":
+            return array("mxp");
+            break;
+        case "考试时间": case "考试": case "ks": case "exam":
+            return array("ks");
+            break;
+        case "新闻": case "学院新闻": case "news":
+            return array("news");
+            break;
+        case "通知": case "学院新闻": case "学院公告": case "notice": 
+            return array("notice");
+            break;
+        case "cet": case "四六级": case "四六级成绩":case "四级": case "六级":
+            return array("cet");
+            break;
+        case "快递": case "快递查询": case "kd": case "kuaidi":
+            return array("kuaidi");
+            break;
+        case "哈哈": case "笑话": case "joke":
+            return array("joke");
+            break;
+        case "天气": case "大连天气": case "明天天气": case "weather":
+            return array("weather");
+            break;
+        case "放假": case "放假时间": case "fjxx": case "fj":
+            return array("fj");
+            break;
+        case "历史成绩": case "上学期成绩": case "cjxx": case "成绩": 
+            return array("cj",-1);
+            break;
+        case "本学期成绩": case "最新成绩":    
+            return array("cj",1);
+            break;
+        case "课表": case "今天课表": case "今天": case "jtkb": case "kb":
+            return array("kb",0);
+            break;
+        case "明天": case "明天课表": case "mt":   
+            return array("kb",1);
+            break;
+        case "后天": case "后天课表": case "ht":
+            return array("kb",2);
+            break;
+        case "st": case "食堂": case "订餐电话":
+            return array("st");
+            break;
+        case "ls": case "all": case "所有食堂": case "全部食堂":
+            return array("qbst");
+            break;
+        case "教师绑定": case "teacher":
+            return array("teacherbd");
+            break;
+        case "周课表": case "week":
+            return array("week");
+            break;
+        case "通识课": case "选修课": case "选修":
+            return array("general_course");
+            break;
+        case "城院盒子": case "盒子": case "citybox":
+            return array("citybox");
+            break;
+        case "vod更新": case "vod视频": case "vod":
+            return array("vod");
+            break;
+        case "档口":
+            return array("statistic_st");
+            break;
+        case "订餐":    
+            return array("order_food");
+            break;
+        case "表白": case "吐槽": case "心愿": case "墙":
+            return array("wall");
+            break;
+        case "game":
+            return array("game");
+            break;
+        default:
+            return "";
+            break;
+    }
+}
+?>

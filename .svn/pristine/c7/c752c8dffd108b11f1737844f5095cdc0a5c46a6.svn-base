@@ -6,7 +6,6 @@
 include ("./wx_responseMsg.php");
 include ("./controlRoute.php");
 include ("./functionHandle.php");
-include ("./functionHelp.php");
 include ("./classHelp.php");
 include ("./mysqlHandle.php");
 
