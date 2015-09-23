@@ -151,7 +151,6 @@ $(function(){
             //$("#cd option" ).hide()
             //$("#cd option").css("display", "none");
             //$("#cd option[sid="+$("#dk :selected").attr("sid")+"]").show()
-            $("#cd option").remove();
             $.getJSON("http://csxyxzs.sinaapp.com/tool/cooperation_dk.php",function(a){
                 $.each(a.items,function(b,d){
                     //var c="<option "+"sid="+d.id+">"+d.name+"</option>";

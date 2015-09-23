@@ -120,84 +120,70 @@
         </div>
     </div>
 </div>
-
-<script src="http://cdn.staticfile.org/jquery/2.1.1-rc2/jquery.min.js"></script>
-<script type="text/javascript">
-function hide_option(){
-    $("#cd option:gt(0)").hide()
-}
-function validTel(a){
-    var b=/^[0-9]{11}$/;
-    if(b.test(a)){
-        return true
+    <script src="http://cdn.staticfile.org/jquery/2.1.1-rc2/jquery.min.js"></script>
+    <script type="text/javascript">
+    function hide_option(){
+        $("#cd option:gt(0)").hide()
     }
-    return false
-}
-$(function(){
-    $.getJSON("http://csxyxzs.sinaapp.com/tool/cooperation_dk.php",function(a){
-        $.each(a.items,function(b,d){
-            var c="<option "+"sid="+d.id+">"+d.name+"</option>";
-            $("#dk").append(c);
-            $.each(d.caidan,function(e,g){
-               //var f="<option "+"sid="+d.id+">"+g.name+" "+g.price+"</option>";
-               //$("#cd").append(f)
-            })
-        });
-        //$("#cd option").hide()
-        //$("#cd option").css("display", "none");
-    });
-    $("#dk").change(function(){
-        if($("#dk :selected").attr("sid")){
-            //$("#cd option" ).hide()
-            //$("#cd option").css("display", "none");
-            //$("#cd option[sid="+$("#dk :selected").attr("sid")+"]").show()
-            $("#cd option").remove();
-            $.getJSON("http://csxyxzs.sinaapp.com/tool/cooperation_dk.php",function(a){
-                $.each(a.items,function(b,d){
-                    //var c="<option "+"sid="+d.id+">"+d.name+"</option>";
-                    //$("#dk").append(c);
-                    $.each(d.caidan,function(e,g){
-                        var f="<option "+"sid="+d.id+">"+g.name+" "+g.price+"</option>";
-                        if(f.substring(0,14)=="<option sid="+$("#dk :selected").attr("sid")){    
-                            $("#cd").append(f)
-                        }
-                    })
-                });
-            });
-        }
-        else{
-            //$("#cd option").hide()
-            //$("#cd option").css("display", "none");
-        }
-    });
-    $("#submit").click(function(){
-        if($("#dk option:selected[df!=1]").length>0&&$("#cd option:selected[df!=1]").length>0&&$("#dz option:selected[df!=1]").length>0){
-            if(validTel($("#tel").val())){
-                var c=$("#tel").val();
-                var d=$("#dk :selected").attr("sid");
-                var f=$("#cd :selected").text();
-                var b=$("#dz :selected").text();
-                var a=$("#extra").val();
-                console.log($("#tel").val());
-                console.log($("#dk :selected").attr("sid"));
-                console.log($("#cd :selected").text());
-                console.log($("#dz :selected").text());
-                console.log($("#extra").val());
-                var e={
-                    dk:d,cd:f,dz:b,tel:c,extra:a
-                };
-                $.post("http://csxyxzs.sinaapp.com/tool/cooperation_dk_rec.php",e,function(h,i,g){
-                    console.log(h);
-                    if(h="订单已告诉商家，请等待。"){
-                        $("#submit").hide();
-                        $("#reply").html("订单已完成，请等待商家确认。")
-                    }
-                })
-            }
+    function validTel(a){
+        var b=/^[0-9]{11}$/;
+        if(b.test(a)){
+            return true
         }
         return false
-    })
-});
-</script>
+    }
+    $(function(){
+        $.getJSON("http://csxyxzs.sinaapp.com/tool/cooperation_dk.php",function(a){
+            $.each(a.items,function(b,d){
+                var c="<option "+"sid="+d.id+">"+d.name+"</option>";
+                $("#dk").append(c);
+                $.each(d.caidan,function(e,g){
+                    var f="<option "+"sid="+d.id+">"+g.name+" "+g.price+"</option>";
+                    $("#cd").append(f)
+                })
+            });
+            //$("#cd option").hide()
+            $("#cd option").css("display", "none");
+        });
+        $("#dk").change(function(){
+            if($("#dk :selected").attr("sid")){
+                // $("#cd option" ).hide()
+                $("#cd option").css("display", "none");
+                $("#cd option[sid="+$("#dk :selected").attr("sid")+"]").show()
+            }
+            else{
+                // $("#cd option").hide()
+                $("#cd option").css("display", "none");
+            }      
+        });
+        $("#submit").click(function(){
+            if($("#dk option:selected[df!=1]").length>0&&$("#cd option:selected[df!=1]").length>0&&$("#dz option:selected[df!=1]").length>0){
+                if(validTel($("#tel").val())){
+                    var c=$("#tel").val();
+                    var d=$("#dk :selected").attr("sid");
+                    var f=$("#cd :selected").text();
+                    var b=$("#dz :selected").text();
+                    var a=$("#extra").val();
+                    console.log($("#tel").val());
+                    console.log($("#dk :selected").attr("sid"));
+                    console.log($("#cd :selected").text());
+                    console.log($("#dz :selected").text());
+                    console.log($("#extra").val());
+                    var e={
+                        dk:d,cd:f,dz:b,tel:c,extra:a
+                    };
+                    $.post("http://csxyxzs.sinaapp.com/tool/cooperation_dk_rec.php",e,function(h,i,g){
+                        console.log(h);
+                        if(h="订单已告诉商家，请等待。"){
+                            $("#submit").hide();
+                            $("#reply").html("订单已完成，请等待商家确认。")
+                        }
+                    })
+                }
+            }
+            return false
+        })
+	});
+    </script>
 </body>
 </html>

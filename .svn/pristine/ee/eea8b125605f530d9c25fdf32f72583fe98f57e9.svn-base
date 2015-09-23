@@ -151,14 +151,13 @@ $(function(){
             //$("#cd option" ).hide()
             //$("#cd option").css("display", "none");
             //$("#cd option[sid="+$("#dk :selected").attr("sid")+"]").show()
-            $("#cd option").remove();
             $.getJSON("http://csxyxzs.sinaapp.com/tool/cooperation_dk.php",function(a){
                 $.each(a.items,function(b,d){
                     //var c="<option "+"sid="+d.id+">"+d.name+"</option>";
                     //$("#dk").append(c);
                     $.each(d.caidan,function(e,g){
                         var f="<option "+"sid="+d.id+">"+g.name+" "+g.price+"</option>";
-                        if(f.substring(0,14)=="<option sid="+$("#dk :selected").attr("sid")){    
+                        if(f.substring(0,8)=="<option "/*+$("#dk :selected").attr("sid")*/){    
                             $("#cd").append(f)
                         }
                     })
